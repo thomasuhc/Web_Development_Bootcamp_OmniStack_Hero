@@ -1,0 +1,9 @@
+npm init
+
+npm install express
+
+npx create-react-app frontend
+
+"start": "react-scripts start",
+
+"BROWSER='chrome' react-scripts start"
