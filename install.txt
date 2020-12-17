@@ -6,4 +6,26 @@ npx create-react-app frontend
 
 "start": "react-scripts start",
 
-"BROWSER='chrome' react-scripts start"
+"BROWSER='chrome' windows env
+
+npm install nodemon -D
+
+http://knexjs.org/
+
+npm install knex
+
+npm install sqlite3
+
+npx knex init
+
+knex migrate:make migration_name
+
+npx knex migrate:make create_ongs 
+
+npx knex migrate:latest
+
+npx knex migrate:make create_incidents
+
+npx knex migrate:rollback
+
+npm install cors
