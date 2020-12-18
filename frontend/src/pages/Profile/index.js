@@ -1,88 +1,89 @@
-import React from 'react';
-import logoImg from '../../assets/logo.svg'
-import { Link } from 'react-router-dom'
-import { FiPower, FiTrash2 } from 'react-icons/fi'
-import './styles.css'
-
+import React, { useState, useEffect } from "react";
+import logoImg from "../../assets/logo.svg";
+import { Link, useHistory } from "react-router-dom";
+import { FiPower, FiTrash2 } from "react-icons/fi";
+import "./styles.css";
+import api from "../../services/api";
 
 export default function Profile() {
-    return (
-        <div className="profile-container">
-            <header>
-                <img src={logoImg} alt="Be The Hero" />
-                <span>Welcome, ASND</span>
 
-                <Link className="button" to="/incidents/new">Submit new case</Link>
-                <button type="button">
-                    <FiPower size={18} color="#e02041" />
-                </button>
-            </header>
+  const [incidents, setIncidents] = useState([]);
+  const history = useHistory();
+  const ongId = localStorage.getItem("ongId");
+  const ongName = localStorage.getItem("ongName");
 
-            <h1>Cases recorded</h1>
+  useEffect(() => {
+    api
+      .get("profile", {
+        headers: {
+          Authorization: ongId,
+        },
+      })
+      .then((response) => {
+        setIncidents(response.data);
+      });
+  }, [ongId]);
 
-            <ul>
-                <li>
-                    <strong>CASE</strong>
-                    <p>Case 032234</p>
+  async function handleDeleteIncident(id) {
 
-                    <strong>DESCRIPTION</strong>
-                    <p>some new case </p>
+    try {
+        await api.delete(`incidents/${id}`, {
+            headers: {
+                Authorization: ongId,
+            }
+        });
 
-                    <strong>VALUE</strong>
-                    <p>CAD$ 100.00</p>
+        setIncidents(incidents.filter(incident => incident.id !== id));
 
-                    <button type="button">
-                        <FiTrash2 size={20} color="#a8a8b3" />
-                    </button>
-                </li>
+    } catch (error) {
+        alert('Erro case not found!!!')
+    }
+  }
 
-                <li>
-                    <strong>CASE</strong>
-                    <p>Case 032234</p>
+  function handleLogout() {
+    localStorage.clear();
+    history.push('/');
+  }
 
-                    <strong>DESCRIPTION</strong>
-                    <p>some new case </p>
+  return (
+    <div className="profile-container">
+      <header>
+        <img src={logoImg} alt="Be The Hero" />
+        <span>Welcome, {ongName}</span>
 
-                    <strong>VALUE</strong>
-                    <p>CAD$ 100.00</p>
+        <Link className="button" to="/incidents/new">
+          Submit new case
+        </Link>
+        <button onClick={handleLogout} type="button">
+          <FiPower size={18} color="#e02041" />
+        </button>
+      </header>
 
-                    <button type="button">
-                        <FiTrash2 size={20} color="#a8a8b3" />
-                    </button>
-                </li>
+      <h1>Cases recorded</h1>
 
-                <li>
-                    <strong>CASE</strong>
-                    <p>Case 032234</p>
+      <ul>
+        {incidents.map((incident) => (
+          <li key={incident.id}>
+            <strong>CASE</strong>
+            <p>{incident.title}</p>
 
-                    <strong>DESCRIPTION</strong>
-                    <p>some new case </p>
+            <strong>DESCRIPTION</strong>
+            <p>{incident.description}</p>
 
-                    <strong>VALUE</strong>
-                    <p>CAD$ 100.00</p>
+            <strong>VALUE</strong>
+            <p>
+              {Intl.NumberFormat("en-CA", {
+                style: "currency",
+                currency: "CAD"
+              }).format(incident.value)}
+            </p>
 
-                    <button type="button">
-                        <FiTrash2 size={20} color="#a8a8b3" />
-                    </button>
-                </li>
-
-                <li>
-                    <strong>CASE</strong>
-                    <p>Case 032234</p>
-
-                    <strong>DESCRIPTION</strong>
-                    <p>some new case </p>
-
-                    <strong>VALUE</strong>
-                    <p>CAD$ 100.00</p>
-
-                    <button type="button">
-                        <FiTrash2 size={20} color="#a8a8b3" />
-                    </button>
-                </li>
-            </ul>
-
-        </div>
-    )
-
+            <button onClick={() => handleDeleteIncident(incident.id)} type="button">
+              <FiTrash2 size={20} color="#a8a8b3" />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
