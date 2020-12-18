@@ -29,3 +29,22 @@ npx knex migrate:make create_incidents
 npx knex migrate:rollback
 
 npm install cors
+
+https://www.npmjs.com/package/react-icons
+
+npm i react-icons
+
+https://www.npmjs.com/package/react-router-dom
+
+npm i react-router-dom
+
+
+   "files.associations": {
+      "*.jsx": "javascriptreact"
+    },
+
+{
+   "emmet.includeLanguages": {
+      "javascript": "javascriptreact"
+   }
+}
